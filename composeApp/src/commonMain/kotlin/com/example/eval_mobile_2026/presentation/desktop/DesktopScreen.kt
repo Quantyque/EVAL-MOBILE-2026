@@ -72,7 +72,7 @@ private fun EmptyDetailPanel(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Sélectionnez une location dans la liste",
+            text = "Select a location from the list",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

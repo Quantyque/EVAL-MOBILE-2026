@@ -58,7 +58,7 @@ fun LocationDetailScreen(
                         IconButton(onClick = onBack) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Retour"
+                                contentDescription = "Back"
                             )
                         }
                     }
@@ -84,7 +84,7 @@ fun LocationDetailScreen(
                             color = MaterialTheme.colorScheme.error
                         )
                         Button(onClick = { viewModel.onAction(LocationDetailAction.Retry) }) {
-                            Text("Réessayer")
+                            Text("Retry")
                         }
                     }
                 }
@@ -130,7 +130,7 @@ private fun LocationDetailContent(
             names = residentNames,
             isLoading = isLoadingResidents
         )
-        DetailRow(label = "Créé le", value = location.created.substringBefore("T"))
+        DetailRow(label = "Created", value = location.created.substringBefore("T"))
     }
 }
 
@@ -142,13 +142,13 @@ private fun ResidentsSection(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
-            text = "Résidents ($totalCount)",
+            text = "Residents ($totalCount)",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         when {
             totalCount == 0 -> Text(
-                text = "Aucun résident",
+                text = "No residents",
                 style = MaterialTheme.typography.bodyLarge
             )
             isLoading -> CircularProgressIndicator(strokeWidth = 2.dp)
@@ -158,7 +158,7 @@ private fun ResidentsSection(
                 }
                 if (totalCount > names.size) {
                     Text(
-                        text = "+ ${totalCount - names.size} autres",
+                        text = "+ ${totalCount - names.size} more",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

@@ -132,7 +132,7 @@ private fun ErrorContent(
             color = MaterialTheme.colorScheme.error
         )
         Button(onClick = onRetry) {
-            Text("Réessayer")
+            Text("Retry")
         }
     }
 }
