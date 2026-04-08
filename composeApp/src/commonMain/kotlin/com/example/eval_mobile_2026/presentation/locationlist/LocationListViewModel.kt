@@ -41,8 +41,9 @@ class LocationListViewModel(
                     _uiState.update { state ->
                         state.copy(
                             isLoading = false,
-                            locations = if (page == 1) locationPage.locations
-                                        else state.locations + locationPage.locations,
+                            locations = (if (page == 1) locationPage.locations
+                                        else state.locations + locationPage.locations)
+                                        .sortedBy { it.name },
                             hasNextPage = locationPage.hasNextPage,
                             currentPage = page,
                             totalCount = if (locationPage.totalCount > 0) locationPage.totalCount
