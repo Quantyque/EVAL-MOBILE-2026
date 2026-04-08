@@ -25,6 +25,17 @@ import androidx.compose.ui.unit.dp
 import com.example.eval_mobile_2026.presentation.components.LocationCard
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Displays the paginated, alphabetically sorted list of Rick and Morty locations.
+ *
+ * Pagination is triggered automatically via [snapshotFlow] on [LazyListState]: when the
+ * last visible item is within 3 items of the end of the list, [LocationListAction.LoadNextPage]
+ * is dispatched to the ViewModel. A count banner is pinned as the first list item so it
+ * scrolls with the content rather than floating above it.
+ *
+ * @param onLocationClick Callback invoked with the selected location ID; navigation is
+ *   handled by the caller (composable, not ViewModel) to keep the ViewModel navigation-agnostic.
+ */
 @Composable
 fun LocationListScreen(
     onLocationClick: (Int) -> Unit,

@@ -32,6 +32,17 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Displays the detail view for a single location.
+ *
+ * - When [onBack] is non-null (mobile), a [TopAppBar] with a back arrow is rendered and the
+ *   location name is shown there. When [onBack] is null (desktop), the name appears in the
+ *   content body instead, avoiding duplication.
+ * - The ViewModel is keyed by [locationId] so that each location gets its own instance. This
+ *   is critical on Desktop where the Window-level ViewModelStore would otherwise reuse the same
+ *   instance when the user selects a different location in the list panel.
+ * - A sound is played once on composition via [LaunchedEffect].
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationDetailScreen(

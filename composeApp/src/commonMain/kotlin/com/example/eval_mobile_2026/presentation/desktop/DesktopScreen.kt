@@ -19,6 +19,17 @@ import androidx.compose.ui.unit.dp
 import com.example.eval_mobile_2026.presentation.locationdetail.LocationDetailScreen
 import com.example.eval_mobile_2026.presentation.locationlist.LocationListScreen
 
+/**
+ * Master-detail layout for the Desktop target.
+ *
+ * The screen is split into two panels:
+ * - Left (40%): [LocationListScreen] — always visible.
+ * - Right (60%): [LocationDetailScreen] for the selected location, or an empty placeholder.
+ *
+ * [selectedLocationId] is held in local composition state. Changing it triggers a
+ * `key(locationId)` recomposition, which disposes the old [LocationDetailScreen] and
+ * creates a fresh one — ensuring the ViewModel is also recreated for the new location.
+ */
 @Composable
 fun DesktopScreen(modifier: Modifier = Modifier) {
     var selectedLocationId by remember { mutableStateOf<Int?>(null) }

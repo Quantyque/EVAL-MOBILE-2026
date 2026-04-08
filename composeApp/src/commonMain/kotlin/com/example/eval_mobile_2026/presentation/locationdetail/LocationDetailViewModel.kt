@@ -9,6 +9,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for the location detail screen.
+ *
+ * Two sequential async operations are managed independently:
+ * 1. [loadLocation] — fetches the location (blocks the detail view until done).
+ * 2. [loadResidentNames] — fires concurrently after the location resolves; failure is
+ *    silent so the rest of the detail screen is never blocked by a secondary request.
+ *
+ * On Desktop, one instance is created per [locationId] via `koinViewModel(key = …)` to
+ * prevent the ViewModelStore from reusing stale state when switching between locations.
+ */
 class LocationDetailViewModel(
     private val repository: LocationRepository,
     private val locationId: Int

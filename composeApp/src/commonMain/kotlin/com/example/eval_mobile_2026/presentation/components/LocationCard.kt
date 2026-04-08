@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.eval_mobile_2026.domain.model.Location
 
+/** Reusable card displaying a location's name and type. Invokes [onClick] on tap. */
 @Composable
 fun LocationCard(
     location: Location,

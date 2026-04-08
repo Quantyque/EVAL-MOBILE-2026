@@ -9,6 +9,14 @@ import androidx.navigation.toRoute
 import com.example.eval_mobile_2026.presentation.locationdetail.LocationDetailScreen
 import com.example.eval_mobile_2026.presentation.locationlist.LocationListScreen
 
+/**
+ * Jetpack Navigation graph for the mobile target.
+ *
+ * Two destinations are declared:
+ * - [AppRoute.LocationList] — start destination; navigates forward on location tap.
+ * - [AppRoute.LocationDetail] — receives [AppRoute.LocationDetail.locationId] via type-safe
+ *   `toRoute<>()` deserialization; passes `onBack` so the detail screen renders its TopAppBar.
+ */
 @Composable
 fun MobileNavGraph(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
