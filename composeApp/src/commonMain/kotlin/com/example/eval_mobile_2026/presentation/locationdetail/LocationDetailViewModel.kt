@@ -33,9 +33,25 @@ class LocationDetailViewModel(
             runCatching { repository.getLocation(locationId) }
                 .onSuccess { location ->
                     _uiState.update { it.copy(isLoading = false, location = location) }
+                    loadResidentNames(location.residents)
                 }
                 .onFailure { error ->
                     _uiState.update { it.copy(isLoading = false, error = error.message) }
+                }
+        }
+    }
+
+    private fun loadResidentNames(residentIds: List<Int>) {
+        if (residentIds.isEmpty()) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingResidents = true) }
+            runCatching { repository.getResidentNames(residentIds) }
+                .onSuccess { names ->
+                    _uiState.update { it.copy(isLoadingResidents = false, residentNames = names) }
+                }
+                .onFailure {
+                    // Resident names are non-critical; silently degrade without blocking the detail
+                    _uiState.update { it.copy(isLoadingResidents = false) }
                 }
         }
     }

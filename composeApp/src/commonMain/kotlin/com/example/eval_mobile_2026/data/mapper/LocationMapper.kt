@@ -10,7 +10,8 @@ fun LocationDto.toDomain(): Location = Location(
     name = name,
     type = type,
     dimension = dimension,
-    residentCount = residents.size,
+    // Extract numeric IDs from resident URLs (e.g. ".../character/42" → 42)
+    residents = residents.mapNotNull { url -> url.substringAfterLast("/").toIntOrNull() },
     url = url,
     created = created
 )

@@ -5,7 +5,8 @@ data class Location(
     val name: String,
     val type: String,
     val dimension: String,
-    val residentCount: Int,
+    /** IDs of the characters present at this location, extracted from the resident URLs. */
+    val residents: List<Int>,
     val url: String,
     val created: String
 )

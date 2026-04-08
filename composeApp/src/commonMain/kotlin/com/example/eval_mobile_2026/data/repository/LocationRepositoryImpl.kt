@@ -7,6 +7,8 @@ import com.example.eval_mobile_2026.domain.model.Location
 import com.example.eval_mobile_2026.domain.model.LocationPage
 import com.example.eval_mobile_2026.domain.repository.LocationRepository
 
+private const val MAX_RESIDENTS_DISPLAYED = 5
+
 class LocationRepositoryImpl(
     private val service: LocationService,
     private val cache: LocationCache
@@ -29,4 +31,7 @@ class LocationRepositoryImpl(
 
     override suspend fun getLocation(id: Int): Location =
         cache.getById(id) ?: service.fetchLocation(id).toDomain().also { cache.put(it) }
+
+    override suspend fun getResidentNames(ids: List<Int>): List<String> =
+        service.fetchCharacters(ids.take(MAX_RESIDENTS_DISPLAYED)).map { it.name }
 }

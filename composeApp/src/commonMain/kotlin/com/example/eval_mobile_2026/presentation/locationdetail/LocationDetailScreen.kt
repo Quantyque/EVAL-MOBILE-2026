@@ -91,6 +91,10 @@ fun LocationDetailScreen(
                 uiState.location != null -> {
                     LocationDetailContent(
                         location = uiState.location!!,
+                        residentNames = uiState.residentNames,
+                        isLoadingResidents = uiState.isLoadingResidents,
+                        // Title is already shown in the TopAppBar on mobile; avoid duplication
+                        showTitle = onBack == null,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -102,22 +106,65 @@ fun LocationDetailScreen(
 @Composable
 private fun LocationDetailContent(
     location: Location,
+    residentNames: List<String>,
+    isLoadingResidents: Boolean,
+    showTitle: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = location.name,
-            style = MaterialTheme.typography.headlineMedium
-        )
-        HorizontalDivider()
-        Spacer(Modifier.height(4.dp))
+        if (showTitle) {
+            Text(
+                text = location.name,
+                style = MaterialTheme.typography.headlineMedium
+            )
+            HorizontalDivider()
+            Spacer(Modifier.height(4.dp))
+        }
         DetailRow(label = "Type", value = location.type)
         DetailRow(label = "Dimension", value = location.dimension)
-        DetailRow(label = "Résidents", value = location.residentCount.toString())
+        ResidentsSection(
+            totalCount = location.residents.size,
+            names = residentNames,
+            isLoading = isLoadingResidents
+        )
         DetailRow(label = "Créé le", value = location.created.substringBefore("T"))
+    }
+}
+
+@Composable
+private fun ResidentsSection(
+    totalCount: Int,
+    names: List<String>,
+    isLoading: Boolean
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = "Résidents ($totalCount)",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        when {
+            totalCount == 0 -> Text(
+                text = "Aucun résident",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            isLoading -> CircularProgressIndicator(strokeWidth = 2.dp)
+            names.isNotEmpty() -> {
+                names.forEach { name ->
+                    Text(text = "• $name", style = MaterialTheme.typography.bodyMedium)
+                }
+                if (totalCount > names.size) {
+                    Text(
+                        text = "+ ${totalCount - names.size} autres",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
     }
 }
 
