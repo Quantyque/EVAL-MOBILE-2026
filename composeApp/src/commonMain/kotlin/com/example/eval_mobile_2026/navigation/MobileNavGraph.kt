@@ -28,7 +28,10 @@ fun MobileNavGraph(modifier: Modifier = Modifier) {
 
         composable<AppRoute.LocationDetail> { backStackEntry ->
             val route: AppRoute.LocationDetail = backStackEntry.toRoute()
-            LocationDetailScreen(locationId = route.locationId)
+            LocationDetailScreen(
+                locationId = route.locationId,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

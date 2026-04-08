@@ -44,7 +44,9 @@ class LocationListViewModel(
                             locations = if (page == 1) locationPage.locations
                                         else state.locations + locationPage.locations,
                             hasNextPage = locationPage.hasNextPage,
-                            currentPage = page
+                            currentPage = page,
+                            totalCount = if (locationPage.totalCount > 0) locationPage.totalCount
+                                         else state.totalCount
                         )
                     }
                 }

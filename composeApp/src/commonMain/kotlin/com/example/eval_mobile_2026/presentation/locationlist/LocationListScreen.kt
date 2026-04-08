@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -60,18 +61,29 @@ fun LocationListScreen(
             else -> {
                 LazyColumn(
                     state = listState,
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(bottom = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    itemsIndexed(uiState.locations) { _, location ->
-                        LocationCard(
-                            location = location,
-                            onClick = { onLocationClick(location.id) }
+                    // Count banner — scrolls with the list
+                    item(key = "count_banner") {
+                        CountBanner(
+                            count = if (uiState.totalCount > 0) uiState.totalCount
+                                    else uiState.locations.size,
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
+
+                    itemsIndexed(uiState.locations, key = { _, loc -> loc.id }) { _, location ->
+                        LocationCard(
+                            location = location,
+                            onClick = { onLocationClick(location.id) },
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                    }
+
                     if (uiState.isLoading) {
-                        item {
+                        item(key = "loading_footer") {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -85,6 +97,21 @@ fun LocationListScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CountBanner(count: Int, modifier: Modifier = Modifier) {
+    Surface(
+        modifier = modifier,
+        color = MaterialTheme.colorScheme.primaryContainer
+    ) {
+        Text(
+            text = "$count locations",
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+        )
     }
 }
 

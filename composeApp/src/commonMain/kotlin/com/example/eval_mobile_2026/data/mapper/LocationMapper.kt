@@ -19,7 +19,7 @@ fun LocationPageDto.toDomain(): LocationPage = LocationPage(
     locations = results.map { it.toDomain() },
     hasNextPage = info.next != null,
     nextPageNumber = if (info.next != null) {
-        // Extract the page number from the next URL query parameter
         info.next.substringAfterLast("page=").toIntOrNull()
-    } else null
+    } else null,
+    totalCount = info.count
 )

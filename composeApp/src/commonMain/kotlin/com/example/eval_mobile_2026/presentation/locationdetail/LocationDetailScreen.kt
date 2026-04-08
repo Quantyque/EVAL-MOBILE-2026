@@ -7,11 +7,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,15 +27,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.eval_mobile_2026.audio.SoundManager
+import com.example.eval_mobile_2026.domain.model.Location
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationDetailScreen(
     locationId: Int,
+    onBack: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
-    viewModel: LocationDetailViewModel = koinViewModel { parametersOf(locationId) },
+    // key ensures a distinct ViewModel per location, preventing stale state when switching items
+    viewModel: LocationDetailViewModel = koinViewModel(key = locationId.toString()) { parametersOf(locationId) },
     soundManager: SoundManager = koinInject()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -37,33 +48,52 @@ fun LocationDetailScreen(
         soundManager.playDetailOpenSound()
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
-        when {
-            uiState.isLoading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            if (onBack != null) {
+                TopAppBar(
+                    title = { Text(uiState.location?.name ?: "") },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Retour"
+                            )
+                        }
+                    }
+                )
             }
-            uiState.error != null -> {
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = uiState.error!!,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                    Button(onClick = { viewModel.onAction(LocationDetailAction.Retry) }) {
-                        Text("Réessayer")
+        }
+    ) { innerPadding ->
+        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+                uiState.error != null -> {
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = uiState.error!!,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        Button(onClick = { viewModel.onAction(LocationDetailAction.Retry) }) {
+                            Text("Réessayer")
+                        }
                     }
                 }
-            }
-            uiState.location != null -> {
-                LocationDetailContent(
-                    location = uiState.location!!,
-                    modifier = Modifier.fillMaxSize()
-                )
+                uiState.location != null -> {
+                    LocationDetailContent(
+                        location = uiState.location!!,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
         }
     }
@@ -71,7 +101,7 @@ fun LocationDetailScreen(
 
 @Composable
 private fun LocationDetailContent(
-    location: com.example.eval_mobile_2026.domain.model.Location,
+    location: Location,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -86,10 +116,7 @@ private fun LocationDetailContent(
         Spacer(Modifier.height(4.dp))
         DetailRow(label = "Type", value = location.type)
         DetailRow(label = "Dimension", value = location.dimension)
-        DetailRow(
-            label = "Résidents",
-            value = location.residentCount.toString()
-        )
+        DetailRow(label = "Résidents", value = location.residentCount.toString())
         DetailRow(label = "Créé le", value = location.created.substringBefore("T"))
     }
 }

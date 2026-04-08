@@ -7,5 +7,6 @@ data class LocationListUiState(
     val locations: List<Location> = emptyList(),
     val error: String? = null,
     val hasNextPage: Boolean = false,
-    val currentPage: Int = 1
+    val currentPage: Int = 1,
+    val totalCount: Int = 0
 )
